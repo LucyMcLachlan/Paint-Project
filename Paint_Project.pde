@@ -15,6 +15,7 @@ color green=#84AB7C;
 color mint=#E2FDD8;
 //variable for color selection
 color selectedColor;
+color canvas;
 //stroke thickness
 float thickness;
 //slider variable
@@ -27,6 +28,7 @@ void setup() {
   selectedColor = navy;
   thickness=1;
   sliderY=350;
+  canvas=white;
   //sketchpad
   //back of sketchpad
   fill(lightBrown);
@@ -68,11 +70,29 @@ void draw() {
   strokeWeight(thickness);
   stroke(selectedColor);
   line(555, 100, 555, 150);
-  //text test
+  //save button
+  fill(white);
+  strokeWeight(3);
+  tactileRect(5, 5, 85, 40);
+  rect(5, 5, 80, 40);
   fill(pink);
-  textSize(30);
-  textAlign(CENTER,CENTER);;
-  text("save",80,30);
+  textSize(25);
+  textAlign(CENTER, CENTER);
+  text("SAVE", 45, 25);
+
+  //load button
+  fill(white);
+  tactileRect(90, 5, 170, 40);
+  rect(90, 5, 80, 40);
+  fill(pink);
+  text("LOAD", 130, 25);
+
+  //new button
+  fill(white);
+  tactileRect(175, 5, 255, 40);
+  rect(175, 5, 80, 40);
+  fill(pink);
+  text("NEW", 215, 25);
 }
 void mouseDragged() {
   if (mouseX>110 && mouseX<500 && mouseY>70 && mouseY<550 && pmouseX>110 && pmouseX<500 && pmouseY>70 && pmouseY<550) {
@@ -83,9 +103,45 @@ void mouseDragged() {
   controlSlider();
 }
 
+void openImage(File f){
+  if(f != null){
+    int n=0;
+    while(n<100){
+      PImage pic = loadImage(f.getPath());
+      image (pic,100,60);
+      n=n+1;
+    }
+  }
+}
+
 void mouseReleased() {
   controlSlider();
+  //new button
+  if (mouseX>175 && mouseX<255 && mouseY>5 && mouseY<45) {
+    stroke(black);
+    strokeWeight(1);
+    fill(canvas);
+    rect(100, 60, 410, 500);
+  }
+
+  //save button
+  if (mouseX>5 && mouseX<85 && mouseY>5 && mouseY<45) {
+    selectOutput("Choose a name for your new image file", "saveImage");
+  }
+
+  //load button
+  if(mouseX>90 && mouseX<170 && mouseY>5 && mouseY<45){
+    selectInput("Pick an image to load","openImage");
+  }
 }
+
+void saveImage(File f) {
+  if (f !=null) {
+    PImage save = get(100, 60, 410, 500);
+    save.save(f.getAbsolutePath());
+  }
+}
+
 void tactileCircle(int x, int y, int r) {
   strokeWeight(2);
   if (dist(x, y, mouseX, mouseY)<r) {
@@ -94,7 +150,13 @@ void tactileCircle(int x, int y, int r) {
     stroke(darkBrown);
   }
 }
-
+void tactileRect(int x, int y, int x2, int y2) {
+  if (mouseX>x && mouseX<x2 && mouseY>y && mouseY<y2) {
+    stroke(peach);
+  } else {
+    stroke(pink);
+  }
+}
 void circleButton(int x, int y, int r, color c) {
   if (dist(x, y, mouseX, mouseY)<r) {
     selectedColor = c;
